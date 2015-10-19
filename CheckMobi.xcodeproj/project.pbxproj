@@ -210,7 +210,7 @@
 		1DEBAF09198AC27500DCA732 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = CheckMobi.com;
 			};
 			buildConfigurationList = 1DEBAF0C198AC27500DCA732 /* Build configuration list for PBXProject "CheckMobi" */;
@@ -300,6 +300,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -362,6 +363,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				INFOPLIST_FILE = "CheckMobi/CheckMobi-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "checkmobi.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -377,6 +379,7 @@
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
 				INFOPLIST_FILE = "CheckMobi/CheckMobi-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "checkmobi.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
