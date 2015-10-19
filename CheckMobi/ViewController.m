@@ -301,6 +301,32 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
                 error_message = @"Invalid phone number. Please provide the number in E164 format.";
                 break;
                 
+            //@todo: REMOVE THIS IN PRODUCTION. End user shouldn't see this errors.
+                
+            case ErrorCodeInvalidApiKey:
+                error_message = @"Invalid API key";
+                break;
+                
+            case ErrorCodeInsufficientFunds:
+                error_message = @"Insuficient funds. Please recharge your account or subscribe for trial credit";
+                break;
+                
+            case ErrorCodeInsufficientCliValidations:
+                error_message = @"No more caller id validations available. Upgrade your account";
+                break;
+                
+            case ErrorCodeValidationMehodNotAvailableInRegion:
+                error_message = @"Validation method not available for this number";
+                break;
+                
+            case ErrorCodeInvalidNotificationURL:
+                error_message = @"Invalid notification URL";
+                break;
+                
+            case ErrorCodeInvalidEventPayload:
+                error_message = @"Invalid event inside the calling action payload";
+                break;
+                
             default:
                 error_message = @"Service unavailable. Please try later.";
         }
