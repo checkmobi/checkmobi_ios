@@ -14,6 +14,9 @@
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 
+const bool kHangupFirstCallduringReverseCli = true;
+const bool kShowCheckmobiDetailedMessages = true;
+
 inline static void ShowMessageBox(NSString * title , NSString *message, NSInteger tag, id delegate)
 {
     UIAlertView * alertView = [[UIAlertView alloc]  initWithTitle:title
@@ -32,6 +35,7 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
 @property (nonatomic, strong) NSString* validationKey;
 @property (nonatomic, assign) bool pinStep;
 @property (nonatomic, strong) CTCallCenter* callCenter;
+@property (nonatomic, assign) enum ValidationType val_type;
 
 - (void) HandleValidationServiceError:(NSInteger) http_status withBody:(NSDictionary*) body withError:(NSError*) error;
 - (void) RefreshGUI;
@@ -64,7 +68,7 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
 
 - (void) CheckCallState
 {
-    if(self.dialingNumber == nil || self.validationKey == nil || self.callId == nil)
+    if(self.val_type != ValidationTypeCLI || self.dialingNumber == nil || self.validationKey == nil || self.callId == nil)
         return;
 
     bool found = false;
@@ -88,11 +92,24 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
     if(!found)
         [self CallCompleted:self.callId];
 }
-    
 
-- (void) CallInitiated:(NSString*) callid
+//hangup the first received incoming call
+
+- (void) CallIncoming:(NSString*) callid
 {
-    if(self.dialingNumber == nil || self.validationKey == nil || self.callId != nil)
+    if(!kHangupFirstCallduringReverseCli || self.val_type != ValidationTypeReverseCLI || self.validationKey == nil || self.callId != nil)
+        return;
+    
+    self.callId = callid;
+    
+    [[CheckMobiService sharedInstance] HangupCall:self.validationKey withResponse:^(NSInteger status, NSDictionary *result, NSError *error){
+        NSLog(@"Hangup call status:%ld body:%@", (long)status, result);
+    }];
+}
+
+- (void) CallOutgoing:(NSString*) callid
+{
+    if(self.validationKey != ValidationTypeCLI || self.dialingNumber == nil || self.validationKey == nil || self.callId != nil)
         return;
     
     self.callId = callid;
@@ -145,8 +162,10 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
     {
         NSLog(@"CallEventHandler: %@", call.callState);
         
-        if ([call.callState isEqualToString: CTCallStateDialing])
-            [weakSelf performSelectorOnMainThread:@selector(CallInitiated:) withObject:call.callID waitUntilDone:NO];
+        if([call.callState isEqualToString:CTCallStateIncoming])
+            [weakSelf performSelectorOnMainThread:@selector(CallIncoming:) withObject:call.callID waitUntilDone:NO];
+        else if ([call.callState isEqualToString: CTCallStateDialing])
+            [weakSelf performSelectorOnMainThread:@selector(CallOutgoing:) withObject:call.callID waitUntilDone:NO];
         else if ([call.callState isEqualToString: CTCallStateDisconnected])
             [weakSelf performSelectorOnMainThread:@selector(CallCompleted:) withObject:call.callID waitUntilDone:NO];
     }];
@@ -191,7 +210,8 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
         [self.validationNumber resignFirstResponder];
         [MBProgressHUD showHUDAddedTo:self.view animated:YES];
         
-        [[CheckMobiService sharedInstance] RequestValidation:[self GetCurrentValidationType] forNumber:self.validationNumber.text withResponse:^(NSInteger status, NSDictionary* result, NSError* error)
+        self.val_type = [self GetCurrentValidationType];
+        [[CheckMobiService sharedInstance] RequestValidation:self.val_type forNumber:self.validationNumber.text withResponse:^(NSInteger status, NSDictionary* result, NSError* error)
         {
             [MBProgressHUD hideHUDForView:self.view animated:YES];
             
@@ -286,6 +306,36 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
     [self RefreshGUI];
 }
 
+- (NSString*) ShowDevelopmentMessages:(enum ErrorCode) error
+{
+    switch (error)
+    {
+        case ErrorCodeInvalidPhoneNumber:
+            return  @"Invalid phone number. Please provide the number in E164 format.";
+            
+        case ErrorCodeInvalidApiKey:
+            return @"Invalid API key";
+            
+        case ErrorCodeInsufficientFunds:
+            return @"Insuficient funds. Please recharge your account or subscribe for trial credit";
+            
+        case ErrorCodeInsufficientCliValidations:
+            return  @"No more caller id validations available. Upgrade your account";
+            
+        case ErrorCodeValidationMehodNotAvailableInRegion:
+            return @"Validation method not available for this number";
+            
+        case ErrorCodeInvalidNotificationURL:
+            return @"Invalid notification URL";
+            
+        case ErrorCodeInvalidEventPayload:
+            return @"Invalid event inside the calling action payload";
+            
+        default:
+            return @"Service unavailable. Please try later.";
+    }
+}
+
 - (void) HandleValidationServiceError:(NSInteger) http_status withBody:(NSDictionary*) body withError:(NSError*) error
 {
     NSLog(@"HandleValidationServiceError: status= %d body: %@ error: %@", (int) http_status, body, error);
@@ -295,40 +345,19 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
         NSString *error_message;
         enum ErrorCode error = (enum ErrorCode)[[body valueForKey:@"code"] intValue];
         
-        switch (error)
+        if(kShowCheckmobiDetailedMessages)
+            error_message = [self ShowDevelopmentMessages:error];
+        else
         {
-            case ErrorCodeInvalidPhoneNumber:
-                error_message = @"Invalid phone number. Please provide the number in E164 format.";
-                break;
-                
-            //@todo: REMOVE THIS IN PRODUCTION. End user shouldn't see this errors.
-                
-            case ErrorCodeInvalidApiKey:
-                error_message = @"Invalid API key";
-                break;
-                
-            case ErrorCodeInsufficientFunds:
-                error_message = @"Insuficient funds. Please recharge your account or subscribe for trial credit";
-                break;
-                
-            case ErrorCodeInsufficientCliValidations:
-                error_message = @"No more caller id validations available. Upgrade your account";
-                break;
-                
-            case ErrorCodeValidationMehodNotAvailableInRegion:
-                error_message = @"Validation method not available for this number";
-                break;
-                
-            case ErrorCodeInvalidNotificationURL:
-                error_message = @"Invalid notification URL";
-                break;
-                
-            case ErrorCodeInvalidEventPayload:
-                error_message = @"Invalid event inside the calling action payload";
-                break;
-                
-            default:
-                error_message = @"Service unavailable. Please try later.";
+            switch (error)
+            {
+                case ErrorCodeInvalidPhoneNumber:
+                    error_message = @"Invalid phone number. Please provide the number in E164 format.";
+                    break;
+
+                default:
+                    error_message = @"Service unavailable. Please try later.";
+            }
         }
         
         ShowMessageBox(@"Error", error_message, 0, nil);
