@@ -14,7 +14,7 @@
 #import <CoreTelephony/CTCallCenter.h>
 #import <CoreTelephony/CTCall.h>
 
-const bool kHangupFirstCallduringReverseCli = true;
+const bool kHangupFirstCallDuringReverseCli = true;
 const bool kShowCheckmobiDetailedMessages = true;
 
 inline static void ShowMessageBox(NSString * title , NSString *message, NSInteger tag, id delegate)
@@ -97,7 +97,7 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
 
 - (void) CallIncoming:(NSString*) callid
 {
-    if(!kHangupFirstCallduringReverseCli || self.val_type != ValidationTypeReverseCLI || self.validationKey == nil || self.callId != nil)
+    if(!kHangupFirstCallDuringReverseCli || self.val_type != ValidationTypeReverseCLI || self.validationKey == nil || self.callId != nil)
         return;
     
     self.callId = callid;
