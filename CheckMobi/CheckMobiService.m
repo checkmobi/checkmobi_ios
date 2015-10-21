@@ -11,16 +11,25 @@
 
 #pragma mark Public Urls
 
-NSString* const kDefaultBaseUrl = @"https://api.checkmobi.com/v1/";
-NSString* const kRequestValidationUrl = @"validation/request";
-NSString* const kValidationStatusUrl = @"validation/status";
-NSString* const kValidationPinVerifyUrl = @"validation/verify";
-NSString* const kValidationCheckNumberUrl = @"checknumber";
+NSString* const kDefaultBaseUrl = @"https://api.checkmobi.com";
+NSString* const kRequestValidationUrl = @"/v1/validation/request";
+NSString* const kValidationStatusUrl = @"/v1/validation/status";
+NSString* const kValidationPinVerifyUrl = @"/v1/validation/verify";
+NSString* const kSendSmsResource = @"/v1/send/sms";
+NSString* const kGetSmsDetailsResource = @"/v1/send";
+NSString* const kCallResource = @"/v1/call";
+NSString* const kGetCountriesListResource = @"/v1/countries";
+NSString* const kValidationCheckNumberUrl = @"/v1/checknumber";
+
+#pragma mark Platform
+
+NSString* const kPlatform = @"ios";
 
 #pragma mark HTTP methods
 
 NSString* const kMethodGet = @"GET";
 NSString* const kMethodPost = @"POST";
+NSString* const kMethodDelete = @"DELETE";
 
 #pragma mark HTTP status codes
 
@@ -160,6 +169,7 @@ typedef void (^httpResponseBlock)(NSInteger, NSDictionary*, NSError*);
     NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
     [params setObject:[CheckMobiService ValidationTypeToString:type] forKey:@"type"];
     [params setObject:e164_number forKey:@"number"];
+    [params setObject:kPlatform forKey:@"platform"];
     
     if(self.notificationURL != nil)
         [params setObject:self.notificationURL forKey:@"notification_callback"];
@@ -201,6 +211,80 @@ typedef void (^httpResponseBlock)(NSInteger, NSDictionary*, NSError*);
     NSDictionary *params = @{ @"number": e164_number };
     
     [self PerformRequest:url method:kMethodPost params:params response:^(NSInteger code, NSDictionary* dict, NSError* error) {
+        response(code, dict, error);
+    }];
+}
+
+- (void) SendSms:(NSString*) e164_number withText:(NSString*) text withCallback:(NSString*) callback withResponse:(CheckMobiServiceResponse) response
+{
+    NSString *url = [self GetUrl:kSendSmsResource];
+
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    [params setObject:e164_number forKey:@"to"];
+    [params setObject:text forKey:@"text"];
+    [params setObject:kPlatform forKey:@"platform"];
+    
+    if(callback != nil)
+        [params setObject:callback forKey:@"notification_callback"];
+    
+    [self PerformRequest:url method:kMethodPost params:params response:^(NSInteger code, NSDictionary* dict, NSError* error) {
+        response(code, dict, error);
+    }];
+}
+
+- (void) GetSmsDetails:(NSString*) key withResponse:(CheckMobiServiceResponse) response
+{
+    NSString *url = [NSString stringWithFormat:@"%@/%@",[self GetUrl:kGetSmsDetailsResource], key];
+
+    [self PerformRequest:url method:kMethodGet params:nil response:^(NSInteger code, NSDictionary* dict, NSError* error) {
+        response(code, dict, error);
+    }];
+}
+
+- (void) PlaceCall:(NSString*) from withTo:(NSString*) to withEvents:(NSString*) events withCallback:(NSString*) callback withResponse:(CheckMobiServiceResponse) response
+{
+    NSString *url = [self GetUrl:kCallResource];
+    
+    NSMutableDictionary *params = [[NSMutableDictionary alloc] init];
+    
+    if(from != nil)
+        [params setObject:from forKey:@"from"];
+    
+    [params setObject:to forKey:@"to"];
+    [params setObject:events forKey:@"events"];
+    [params setObject:kPlatform forKey:@"platform"];
+    
+    if(callback != nil)
+        [params setObject:callback forKey:@"notification_callback"];
+    
+    [self PerformRequest:url method:kMethodPost params:params response:^(NSInteger code, NSDictionary* dict, NSError* error) {
+        response(code, dict, error);
+    }];
+}
+
+- (void) GetCallDetails:(NSString*) key withResponse:(CheckMobiServiceResponse) response
+{
+    NSString *url = [NSString stringWithFormat:@"%@/%@",[self GetUrl:kCallResource], key];
+    
+    [self PerformRequest:url method:kMethodGet params:nil response:^(NSInteger code, NSDictionary* dict, NSError* error) {
+        response(code, dict, error);
+    }];
+}
+
+- (void) HangupCall:(NSString*) key withResponse:(CheckMobiServiceResponse) response
+{
+    NSString *url = [NSString stringWithFormat:@"%@/%@",[self GetUrl:kCallResource], key];
+    
+    [self PerformRequest:url method:kMethodDelete params:nil response:^(NSInteger code, NSDictionary* dict, NSError* error) {
+        response(code, dict, error);
+    }];
+}
+
+- (void) GetCountriesList:(CheckMobiServiceResponse) response
+{
+    NSString *url = [self GetUrl:kGetCountriesListResource];
+    
+    [self PerformRequest:url method:kMethodGet params:nil response:^(NSInteger code, NSDictionary* dict, NSError* error) {
         response(code, dict, error);
     }];
 }

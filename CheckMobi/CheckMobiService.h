@@ -24,11 +24,12 @@ enum ErrorCode
     ErrorCodeInvalidPhoneNumber = 2,
     ErrorCodeInvalidRequestId = 3,
     ErrorCodeInvalidValidationType = 4,
-    ErrorCodeInsufficientFounds = 5,
+    ErrorCodeInsufficientFunds = 5,
     ErrorCodeInsufficientCliValidations = 6,
     ErrorCodeInvalidRequestPayload = 7,
     ErrorCodeValidationMehodNotAvailableInRegion = 8,
-    ErrorCodeInvalidNotificationURL = 9
+    ErrorCodeInvalidNotificationURL = 9,
+    ErrorCodeInvalidEventPayload = 10
 };
 
 //returned http codes
@@ -62,5 +63,11 @@ typedef void (^CheckMobiServiceResponse)(NSInteger status, NSDictionary* result,
 - (void) CheckValidationStatus:(NSString*) requestId withResponse:(CheckMobiServiceResponse) response;
 - (void) VerifyPin:(NSString*) requestId withPin:(NSString*) pin withResponse:(CheckMobiServiceResponse) response;
 - (void) CheckNumberInfo:(NSString*) e164_number withResponse:(CheckMobiServiceResponse) response;
+- (void) SendSms:(NSString*) e164_number withText:(NSString*) text withCallback:(NSString*) callback withResponse:(CheckMobiServiceResponse) response;
+- (void) GetSmsDetails:(NSString*) key withResponse:(CheckMobiServiceResponse) response;
+- (void) PlaceCall:(NSString*) from withTo:(NSString*) to withEvents:(NSString*) events withCallback:(NSString*) callback withResponse:(CheckMobiServiceResponse) response;
+- (void) GetCallDetails:(NSString*) key withResponse:(CheckMobiServiceResponse) response;
+- (void) HangupCall:(NSString*) key withResponse:(CheckMobiServiceResponse) response;
+- (void) GetCountriesList:(CheckMobiServiceResponse) response;
 
 @end
