@@ -109,7 +109,7 @@ inline static void ShowMessageBox(NSString * title , NSString *message, NSIntege
 
 - (void) CallOutgoing:(NSString*) callid
 {
-    if(self.validationKey != ValidationTypeCLI || self.dialingNumber == nil || self.validationKey == nil || self.callId != nil)
+    if(self.val_type != ValidationTypeCLI || self.dialingNumber == nil || self.validationKey == nil || self.callId != nil)
         return;
     
     self.callId = callid;
