@@ -38,7 +38,7 @@
 		1DEBAF14198AC27500DCA732 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1DEBAF16198AC27500DCA732 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		1DEBAF18198AC27500DCA732 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
-		1DEBAF1C198AC27500DCA732 /* CheckMobi-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "CheckMobi-Info.plist"; sourceTree = "<group>"; };
+		1DEBAF1C198AC27500DCA732 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		1DEBAF1E198AC27500DCA732 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		1DEBAF20198AC27500DCA732 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = main.m; path = CheckMobi/main.m; sourceTree = "<group>"; };
 		1DEBAF22198AC27500DCA732 /* CheckMobi-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "CheckMobi-Prefix.pch"; sourceTree = "<group>"; };
@@ -146,7 +146,7 @@
 		1DEBAF1B198AC27500DCA732 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				1DEBAF1C198AC27500DCA732 /* CheckMobi-Info.plist */,
+				1DEBAF1C198AC27500DCA732 /* Info.plist */,
 				1DEBAF1D198AC27500DCA732 /* InfoPlist.strings */,
 				1DEBAF22198AC27500DCA732 /* CheckMobi-Prefix.pch */,
 			);
@@ -214,7 +214,7 @@
 				ORGANIZATIONNAME = CheckMobi.com;
 				TargetAttributes = {
 					1DEBAF10198AC27500DCA732 = {
-						DevelopmentTeam = 5DC828KVC9;
+						DevelopmentTeam = V94PTVVAB3;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -387,13 +387,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 5DC828KVC9;
+				DEVELOPMENT_TEAM = V94PTVVAB3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CheckMobi/CheckMobi-Prefix.pch";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
-				INFOPLIST_FILE = "CheckMobi/CheckMobi-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "checkmobi.${PRODUCT_NAME:rfc1034identifier}";
+				INFOPLIST_FILE = "$(SRCROOT)/CheckMobi/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = com.checkmobi.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
@@ -406,13 +406,13 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = 5DC828KVC9;
+				DEVELOPMENT_TEAM = V94PTVVAB3;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CheckMobi/CheckMobi-Prefix.pch";
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_WARN_SIGN_COMPARE = YES;
-				INFOPLIST_FILE = "CheckMobi/CheckMobi-Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = "checkmobi.${PRODUCT_NAME:rfc1034identifier}";
+				INFOPLIST_FILE = "$(SRCROOT)/CheckMobi/Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = com.checkmobi.app;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				WRAPPER_EXTENSION = app;
